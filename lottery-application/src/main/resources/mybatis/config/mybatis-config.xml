@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-<!--    <typeAliases>-->
-<!--        <package name="cn.itedus.lottery.infrastructure.po.Activity"/>-->
-<!--    </typeAliases>-->
+    <typeAliases>
+        <package name="com.bs6.lottery.infrastructure.po.Activity"/>
+    </typeAliases>
 </configuration>

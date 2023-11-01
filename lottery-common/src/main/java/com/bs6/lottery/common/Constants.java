@@ -30,7 +30,7 @@ public class Constants {
     /**
      * activity status：1 Editing、2 request a review、3 request canceled、4 approved、5 running(After censoring and being scanned by worker)、6 refused、7 closed、8 opened
      */
-    public enum ActivityState {
+    public enum ActivityStatus {
 
         /**
          * 1：edit
@@ -68,7 +68,7 @@ public class Constants {
         private Integer code;
         private String info;
 
-        ActivityState(Integer code, String info) {
+        ActivityStatus(Integer code, String info) {
             this.code = code;
             this.info = info;
         }
