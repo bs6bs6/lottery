@@ -14,11 +14,13 @@ public abstract class BaseActivityPartake implements IActivityPartake {
     @Resource
     protected IActivityRepository activityRepository;
 
-
     @Override
     public PartakeResult doPartake(PartakeReq req) {
         // 查询活动账单
         ActivityBillVO activityBillVO = queryActivityBill(req);
+        if(null == activityBillVO){
+            return new PartakeResult(Constants.ResponseCode.UN_ERROR.getCode(), "Activity does not exist");
+        }
 
         // 活动信息校验处理【活动库存、状态、日期、个人参与次数】
         Result checkResult = this.checkActivityBill(req, activityBillVO);
@@ -47,7 +49,6 @@ public abstract class BaseActivityPartake implements IActivityPartake {
 
     private ActivityBillVO queryActivityBill(PartakeReq req){
         return activityRepository.queryActivityBill(req);
-//        return null;
     }
 
     /**

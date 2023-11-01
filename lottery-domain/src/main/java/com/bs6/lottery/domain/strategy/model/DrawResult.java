@@ -16,7 +16,7 @@ public class DrawResult {
     /**
      * Draw Result Status：0 lose、1 won、2  Constants.DrawStatus
      */
-    private Integer drawState = Constants.DrawStatus.LOSE.getCode();
+    private Integer drawStatus = Constants.DrawStatus.LOSE.getCode();
 
     /**
      * prize info
@@ -29,13 +29,13 @@ public class DrawResult {
     public DrawResult(String uid, Long strategyId, Integer drawState) {
         this.uid = uid;
         this.strategyId = strategyId;
-        this.drawState = drawState;
+        this.drawStatus = drawState;
     }
 
     public DrawResult(String uid, Long strategyId, Integer drawState, DrawPrizeInfo drawPrizeInfo) {
         this.uid = uid;
         this.strategyId = strategyId;
-        this.drawState = drawState;
+        this.drawStatus = drawState;
         this.drawPrizeInfo = drawPrizeInfo;
     }
 
@@ -55,12 +55,12 @@ public class DrawResult {
         this.strategyId = strategyId;
     }
 
-    public Integer getDrawState() {
-        return drawState;
+    public Integer getDrawStatus() {
+        return drawStatus;
     }
 
-    public void setDrawState(Integer drawState) {
-        this.drawState = drawState;
+    public void setDrawStatus(Integer drawStatus) {
+        this.drawStatus = drawStatus;
     }
 
     public DrawPrizeInfo getDrawPrizeInfo() {
@@ -76,7 +76,7 @@ public class DrawResult {
         return "DrawResult{" +
                 "uid='" + uid + '\'' +
                 ", strategyId=" + strategyId +
-                ", drawState=" + drawState +
+                ", drawStatus=" + drawStatus +
                 ", drawPrizeInfo=" + drawPrizeInfo +
                 '}';
     }

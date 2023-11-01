@@ -47,4 +47,13 @@ public class PartakeReq {
     public void setPartakeDate(Date partakeDate) {
         this.partakeDate = partakeDate;
     }
+
+    @Override
+    public String toString() {
+        return "PartakeReq{" +
+                "uid='" + uid + '\'' +
+                ", activityId=" + activityId +
+                ", partakeDate=" + partakeDate +
+                '}';
+    }
 }

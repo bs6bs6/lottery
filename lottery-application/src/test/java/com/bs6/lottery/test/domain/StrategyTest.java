@@ -1,7 +1,11 @@
 package com.bs6.lottery.test.domain;
 
+import com.bs6.lottery.application.process.IActivityProcess;
+import com.bs6.lottery.application.process.model.DrawProcessReq;
+import com.bs6.lottery.application.process.model.DrawProcessResult;
 import com.bs6.lottery.domain.activity.model.PartakeReq;
 import com.bs6.lottery.domain.activity.repository.IActivityRepository;
+import com.bs6.lottery.domain.activity.service.partake.IActivityPartake;
 import com.bs6.lottery.domain.strategy.model.DrawReq;
 import com.bs6.lottery.domain.strategy.repository.IStrategyRepository;
 import com.bs6.lottery.domain.strategy.service.draw.impl.DrawExecImpl;
@@ -23,6 +27,10 @@ public class StrategyTest {
     DrawExecImpl drawExec;
     @Autowired
     IActivityRepository activityRepository;
+    @Autowired
+    IActivityPartake activityPartake;
+    @Autowired
+    IActivityProcess activityProcess;
     @Test
     public void test_strategy() {
         System.out.println(strategyRepository.queryStrategyAgg(10001L));
@@ -35,6 +43,12 @@ public class StrategyTest {
     }
     @Test
     public void test_activity(){
-        System.out.println(activityRepository.queryActivityBill(new PartakeReq("1",100001L)));
+        System.out.println(activityPartake.doPartake(new PartakeReq("1",1000001L)));
+    }
+
+    @Test
+    public void test_activity_process(){
+        DrawProcessReq drawProcessReq = new DrawProcessReq("1",100001L);
+        System.out.println(activityProcess.doDrawProcess(drawProcessReq));
     }
 }

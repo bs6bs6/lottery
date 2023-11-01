@@ -57,4 +57,11 @@ public class Result implements Serializable {
         this.info = info;
     }
 
+    @Override
+    public String toString() {
+        return "Result{" +
+                "code='" + code + '\'' +
+                ", info='" + info + '\'' +
+                '}';
+    }
 }

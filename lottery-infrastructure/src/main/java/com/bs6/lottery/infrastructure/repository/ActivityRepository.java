@@ -75,7 +75,9 @@ public class ActivityRepository implements IActivityRepository {
 
         // 查询活动信息
         Activity activity = activityDao.queryActivityById(req.getActivityId());
-
+        if(null == activity){
+            return null;
+        }
         // 查询领取次数
         UserTakeActivityCount userTakeActivityCountReq = new UserTakeActivityCount();
         userTakeActivityCountReq.setUid(req.getUid());

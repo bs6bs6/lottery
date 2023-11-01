@@ -67,13 +67,13 @@ public abstract class AbstractDrawBase extends DrawAlgoConfig implements IDrawEx
 
     private DrawResult buildDrawResult(String uId, Long strategyId, String prizeId) {
         if (null == prizeId) {
-            logger.info("执行策略抽奖完成【未中奖】，用户：{} 策略ID：{}", uId, strategyId);
+            logger.info("Draw process complete.[You lose]，user：{} strategy：{}", uId, strategyId);
             return new DrawResult(uId, strategyId, Constants.DrawStatus.LOSE.getCode());
         }
 
         PrizeBriefVO prize = queryPrizeInfoByPrizeId(prizeId);
         DrawPrizeInfo drawPrizeInfo = new DrawPrizeInfo(prize.getPrizeId(), prize.getPrizeType(), prize.getPrizeName(), prize.getPrizeContent());
-        logger.info("执行策略抽奖完成【已中奖】，用户：{} 策略ID：{} 奖品ID：{} 奖品名称：{}", uId, strategyId, prizeId, prize.getPrizeName());
+        logger.info("Draw process complete. [You win!]，user：{} strategy：{} prizeId：{} prizeName：{}", uId, strategyId, prizeId, prize.getPrizeName());
 
         return new DrawResult(uId, strategyId, Constants.DrawStatus.WIN.getCode(), drawPrizeInfo);
     }

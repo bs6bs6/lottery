@@ -4,7 +4,7 @@ public class Constants {
 
     public enum ResponseCode {
         SUCCESS("0000", "Success"),
-        UN_ERROR("0001", "Unknown Error"),
+        UN_ERROR("0001", "Error"),
         ILLEGAL_PARAMETER("0002", "Illegal Parameters"),
         INDEX_DUP("0003", "Primary Key Duplicates"),
         NO_UPDATE("0004","SQL No Updates");
