@@ -109,4 +109,20 @@ public class ActivityBillVO {
     public void setUserTakeLeftCount(Integer userTakeLeftCount) {
         this.userTakeLeftCount = userTakeLeftCount;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityBillVO{" +
+                "uid='" + uid + '\'' +
+                ", activityId=" + activityId +
+                ", activityName='" + activityName + '\'' +
+                ", beginDateTime=" + beginDateTime +
+                ", endDateTime=" + endDateTime +
+                ", stockSurplusCount=" + stockSurplusCount +
+                ", status=" + status +
+                ", strategyId=" + strategyId +
+                ", takeCount=" + takeCount +
+                ", userTakeLeftCount=" + userTakeLeftCount +
+                '}';
+    }
 }

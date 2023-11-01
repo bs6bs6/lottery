@@ -71,4 +71,13 @@ public class DrawResult {
         this.drawPrizeInfo = drawPrizeInfo;
     }
 
+    @Override
+    public String toString() {
+        return "DrawResult{" +
+                "uid='" + uid + '\'' +
+                ", strategyId=" + strategyId +
+                ", drawState=" + drawState +
+                ", drawPrizeInfo=" + drawPrizeInfo +
+                '}';
+    }
 }
