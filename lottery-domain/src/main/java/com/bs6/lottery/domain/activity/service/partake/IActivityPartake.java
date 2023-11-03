@@ -1,5 +1,7 @@
 package com.bs6.lottery.domain.activity.service.partake;
 
+import com.bs6.lottery.common.Result;
+import com.bs6.lottery.domain.activity.model.DrawOrderVO;
 import com.bs6.lottery.domain.activity.model.PartakeReq;
 import com.bs6.lottery.domain.activity.model.PartakeResult;
 
@@ -11,5 +13,7 @@ public interface IActivityPartake {
      * @return    领取结果
      */
     PartakeResult doPartake(PartakeReq req);
+
+    Result recordDrawOrder(DrawOrderVO drawOrder);
 
 }

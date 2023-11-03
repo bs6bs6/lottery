@@ -2,7 +2,6 @@ package com.bs6.lottery.test.domain;
 
 import com.bs6.lottery.application.process.IActivityProcess;
 import com.bs6.lottery.application.process.model.DrawProcessReq;
-import com.bs6.lottery.application.process.model.DrawProcessResult;
 import com.bs6.lottery.domain.activity.model.PartakeReq;
 import com.bs6.lottery.domain.activity.repository.IActivityRepository;
 import com.bs6.lottery.domain.activity.service.partake.IActivityPartake;
@@ -10,11 +9,17 @@ import com.bs6.lottery.domain.strategy.model.DrawReq;
 import com.bs6.lottery.domain.strategy.repository.IStrategyRepository;
 import com.bs6.lottery.domain.strategy.service.draw.impl.DrawExecImpl;
 import com.bs6.lottery.infrastructure.dao.IStrategyPrizeDao;
+import com.bs6.lottery.infrastructure.dao.IUserTakeActivityCountDao;
+import com.bs6.lottery.infrastructure.po.UserTakeActivityCount;
+
+import com.bs6.lottery.rpc.ILotteryActivityBooth;
+import com.bs6.lottery.rpc.model.DrawPrizeReq;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,6 +36,11 @@ public class StrategyTest {
     IActivityPartake activityPartake;
     @Autowired
     IActivityProcess activityProcess;
+    @Autowired
+    IUserTakeActivityCountDao userTakeActivityCountDao;
+    @Autowired
+    ILotteryActivityBooth lotteryActivityBooth;
+
     @Test
     public void test_strategy() {
         System.out.println(strategyRepository.queryStrategyAgg(10001L));
@@ -43,12 +53,30 @@ public class StrategyTest {
     }
     @Test
     public void test_activity(){
-        System.out.println(activityPartake.doPartake(new PartakeReq("1",1000001L)));
+        System.out.println(activityPartake.doPartake(new PartakeReq("1",100001L)));
+    }
+
+    @Test
+    public void test_activity_count(){
+        UserTakeActivityCount userTakeActivityCount = new UserTakeActivityCount();
+        userTakeActivityCount.setUid("1");
+        userTakeActivityCount.setActivityId(100001L);
+        int n = userTakeActivityCountDao.updateLeftCount(userTakeActivityCount);
+        System.out.println(n);
     }
 
     @Test
     public void test_activity_process(){
-        DrawProcessReq drawProcessReq = new DrawProcessReq("1",100001L);
+        DrawProcessReq drawProcessReq = new DrawProcessReq("Uhdgkw766120d",100001L);
         System.out.println(activityProcess.doDrawProcess(drawProcessReq));
     }
+
+    @Test
+    public void test_controller(){
+        DrawPrizeReq req = new DrawPrizeReq("Uhdgkw766120d",100001L);
+        System.out.println(lotteryActivityBooth.doDraw(req));
+
+    }
+
+
 }

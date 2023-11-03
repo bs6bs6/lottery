@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bs6.lottery.infrastructure.dao.IUserStrategyExportDao">
+
+    <resultMap id="userStrategyExportMap" type="com.bs6.lottery.infrastructure.po.UserStrategyExport">
+        <id column="id" property="id"/>
+        <result column="u_id" property="uId"/>
+        <result column="activity_id" property="activityId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="strategy_id" property="strategyId"/>
+        <result column="strategy_mode" property="strategyMode"/>
+        <result column="grant_type" property="distributeType"/>
+        <result column="grant_date" property="distributeDate"/>
+        <result column="grant_state" property="distributeStatus"/>
+        <result column="award_id" property="prizeId"/>
+        <result column="award_type" property="prizeType"/>
+        <result column="award_name" property="prizeName"/>
+        <result column="award_content" property="prizeContent"/>
+        <result column="uuid" property="uuid"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.bs6.lottery.infrastructure.po.UserStrategyExport">
+        INSERT INTO user_strategy_export_001
+        (u_id, activity_id, order_id, strategy_id, strategy_mode,
+         grant_type, grant_date, grant_state, award_id, award_type,
+         award_name, award_content, uuid, create_time, update_time)
+        VALUES
+        (#{uid},#{activityId},#{orderId},#{strategyId},#{strategyMode},
+         #{distributeType},#{distributeDate},#{distributeStatus},#{prizeId},#{prizeType},
+         #{prizeName},#{prizeContent},#{uuid},now(),now())
+    </insert>
+
+    <select id="queryUserStrategyExportByUId" parameterType="java.lang.String" resultMap="userStrategyExportMap">
+        SELECT id, u_id, activity_id, order_id, strategy_id, strategy_mode,
+               grant_type, grant_date, grant_state, award_id, award_type,
+               award_name, award_content, uuid, create_time, update_time
+        FROM user_strategy_export_001
+        WHERE u_id = #{uid}
+    </select>
+
+</mapper>

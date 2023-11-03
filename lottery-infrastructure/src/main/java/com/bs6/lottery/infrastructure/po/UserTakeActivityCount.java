@@ -2,13 +2,6 @@ package com.bs6.lottery.infrastructure.po;
 
 import java.util.Date;
 
-/**
- * @description: 用户活动参与次数表
- * @author: 小傅哥，微信：fustack
- * @date: 2021/10/1
- * @github: https://github.com/fuzhengwei
- * @Copyright: 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
- */
 public class UserTakeActivityCount {
 
     /**

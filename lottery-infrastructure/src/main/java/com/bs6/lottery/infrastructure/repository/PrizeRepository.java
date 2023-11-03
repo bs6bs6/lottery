@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class AwardRepository implements IPrizeRepository {
+public class PrizeRepository implements IPrizeRepository {
 
 }

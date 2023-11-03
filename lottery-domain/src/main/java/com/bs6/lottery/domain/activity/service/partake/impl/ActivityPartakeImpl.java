@@ -2,8 +2,10 @@ package com.bs6.lottery.domain.activity.service.partake.impl;
 
 import com.bs6.lottery.common.Constants;
 import com.bs6.lottery.common.Result;
+import com.bs6.lottery.domain.activity.model.DrawOrderVO;
 import com.bs6.lottery.domain.activity.model.PartakeReq;
 import com.bs6.lottery.domain.activity.model.ActivityBillVO;
+import com.bs6.lottery.domain.activity.model.UserTakeActivityVO;
 import com.bs6.lottery.domain.activity.repository.IActivityRepository;
 import com.bs6.lottery.domain.activity.repository.IUserTakeActivityRepository;
 import com.bs6.lottery.domain.activity.service.partake.BaseActivityPartake;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -28,7 +31,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
     private IUserTakeActivityRepository userTakeActivityRepository;
 
     @Resource
-    private Map<Constants.Ids, IIdGenerator> idGeneratorMap;
+    private TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -70,25 +73,56 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
         return Result.buildSuccessResult();
     }
 
-    @Transactional
     @Override
-    public Result grabActivity(PartakeReq partake, ActivityBillVO bill) {
+    public Result grabActivity(PartakeReq partake, ActivityBillVO bill,Long takeId) {
+        return transactionTemplate.execute(status -> {
+            try {
+                // 扣减个人已参与次数
+                int updateCount = userTakeActivityRepository.subtractionLeftCount(bill.getActivityId(), bill.getActivityName(), bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getUid(), partake.getPartakeDate());
+                if (0 == updateCount) {
+                    status.setRollbackOnly();
+                    logger.error("领取活动，扣减个人已参与次数失败 activityId：{} uId：{}", partake.getActivityId(), partake.getUid());
+                    return Result.buildResult(Constants.ResponseCode.NO_UPDATE);
+                }
+
+                // 写入领取活动记录
+                userTakeActivityRepository.takeActivity(bill.getActivityId(), bill.getActivityName(), bill.getStrategyId(),bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getUid(), partake.getPartakeDate(), takeId);
+            } catch (DuplicateKeyException e) {
+                status.setRollbackOnly();
+                logger.error("领取活动，唯一索引冲突 activityId：{} uId：{}", partake.getActivityId(), partake.getUid(), e);
+                return Result.buildResult(Constants.ResponseCode.INDEX_DUP);
+            }
+            return Result.buildSuccessResult();
+        });
+    }
+
+    @Override
+    protected UserTakeActivityVO queryNoConsumedTakeActivityOrder(Long activityId, String uId) {
+        return userTakeActivityRepository.queryNoConsumedTakeActivityOrder(activityId, uId);
+    }
+
+    @Override
+    public Result recordDrawOrder(DrawOrderVO drawOrder) {
+            return transactionTemplate.execute(status -> {
                 try {
-                    // 扣减个人已参与次数
-                    int updateCount = userTakeActivityRepository.subtractionLeftCount(bill.getActivityId(), bill.getActivityName(), bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getUid(), partake.getPartakeDate());
-                    if (0 == updateCount) {
-                        logger.error("领取活动，扣减个人已参与次数失败 activityId：{} uId：{}", partake.getActivityId(), partake.getUid());
+                    // lock activity, confirm that it is taken by user，status 0 -> 1
+                    int lockCount = userTakeActivityRepository.lockTackActivity(drawOrder.getUid(), drawOrder.getActivityId(), drawOrder.getTakeId());
+                    if (0 == lockCount) {
+                        status.setRollbackOnly();
+                        logger.error("记录中奖单，个人参与活动抽奖已消耗完 activityId：{} uId：{}", drawOrder.getActivityId(), drawOrder.getUid());
                         return Result.buildResult(Constants.ResponseCode.NO_UPDATE);
                     }
 
-                    // 插入领取活动信息
-                    Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
-                    userTakeActivityRepository.takeActivity(bill.getActivityId(), bill.getActivityName(), bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getUid(), partake.getPartakeDate(), takeId);
+                    // 保存抽奖信息
+                    userTakeActivityRepository.saveUserStrategyExport(drawOrder);
                 } catch (DuplicateKeyException e) {
-                    logger.error("领取活动，唯一索引冲突 activityId：{} uId：{}", partake.getActivityId(), partake.getUid(), e);
+                    status.setRollbackOnly();
+                    logger.error("记录中奖单，唯一索引冲突 activityId：{} uId：{}", drawOrder.getActivityId(), drawOrder.getUid(), e);
                     return Result.buildResult(Constants.ResponseCode.INDEX_DUP);
                 }
                 return Result.buildSuccessResult();
-    }
+            });
+        }
+
 
 }

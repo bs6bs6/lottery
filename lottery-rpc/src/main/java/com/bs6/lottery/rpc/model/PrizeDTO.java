@@ -1,8 +1,26 @@
-package com.bs6.lottery.domain.strategy.model;
+package com.bs6.lottery.rpc.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DrawPrizeInfo {
+/**
+ * @description: 奖品信息
+ * @author: 小傅哥，微信：fustack
+ * @date: 2021/10/16
+ * @github: https://github.com/fuzhengwei
+ * @Copyright: 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ */
+public class PrizeDTO implements Serializable {
+
+    /**
+     * 用户ID
+     */
+    private String userId;
+
+    /**
+     * 活动ID
+     */
+    private Long activityId;
 
     /**
      * 奖品ID
@@ -24,6 +42,9 @@ public class DrawPrizeInfo {
      */
     private String prizeContent;
 
+    /**
+     * 策略方式（1:单项概率、2:总体概率）
+     */
     private Integer strategyMode;
 
     /**
@@ -35,14 +56,25 @@ public class DrawPrizeInfo {
      */
     private Date distributeDate;
 
-    public DrawPrizeInfo() {
+    public PrizeDTO(String userId,Long activityId) {
+        this.userId = userId;
+        this.activityId = activityId;
     }
 
-    public DrawPrizeInfo(String prizeId, Integer prizeType, String prizeName,String prizeContent) {
-        this.prizeId = prizeId;
-        this.prizeType = prizeType;
-        this.prizeName = prizeName;
-        this.prizeContent = prizeContent;
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Long getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(Long activityId) {
+        this.activityId = activityId;
     }
 
     public String getPrizeId() {
@@ -99,5 +131,20 @@ public class DrawPrizeInfo {
 
     public void setDistributeDate(Date distributeDate) {
         this.distributeDate = distributeDate;
+    }
+
+    @Override
+    public String toString() {
+        return "PrizeDTO{" +
+                "userId='" + userId + '\'' +
+                ", activityId=" + activityId +
+                ", prizeId='" + prizeId + '\'' +
+                ", prizeType=" + prizeType +
+                ", prizeName='" + prizeName + '\'' +
+                ", prizeContent='" + prizeContent + '\'' +
+                ", strategyMode=" + strategyMode +
+                ", distributeType=" + distributeType +
+                ", distributeDate=" + distributeDate +
+                '}';
     }
 }
