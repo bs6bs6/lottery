@@ -64,8 +64,8 @@ public class ActivityRepository implements IActivityRepository {
     }
 
     @Override
-    public boolean alterStatus(Long activityId, Enum<Constants.ActivityStatus> beforeState, Enum<Constants.ActivityStatus> afterState) {
-        AlterStatusVO alterStatusVO = new AlterStatusVO(activityId, ((Constants.ActivityStatus) beforeState).getCode(), ((Constants.ActivityStatus) afterState).getCode());
+    public boolean alterStatus(Long activityId, Enum<Constants.ActivityStatus> beforestatus, Enum<Constants.ActivityStatus> afterstatus) {
+        AlterStatusVO alterStatusVO = new AlterStatusVO(activityId, ((Constants.ActivityStatus) beforestatus).getCode(), ((Constants.ActivityStatus) afterstatus).getCode());
         int count = activityDao.alterStatus(alterStatusVO);
         return 1 == count;
     }
@@ -94,7 +94,7 @@ public class ActivityRepository implements IActivityRepository {
         activityBillVO.setTakeCount(activity.getTakeCount());
         activityBillVO.setStockSurplusCount(activity.getStockSurplusCount());
         activityBillVO.setStrategyId(activity.getStrategyId());
-        activityBillVO.setStatus(activity.getState());
+        activityBillVO.setStatus(activity.getStatus());
         activityBillVO.setUserTakeLeftCount(null == userTakeActivityCount ? null : userTakeActivityCount.getLeftCount());
 
         return activityBillVO;
@@ -105,4 +105,20 @@ public class ActivityRepository implements IActivityRepository {
         return activityDao.subtractionActivityStock(activityId);
     }
 
+    @Override
+    public List<ActivityVO> scanToDoActivityList(Long id) {
+        List<Activity> activityList = activityDao.scanToDoActivityList(id);
+        List<ActivityVO> activityVOList = new ArrayList<>(activityList.size());
+        for (Activity activity : activityList) {
+            ActivityVO activityVO = new ActivityVO();
+            activityVO.setId(activity.getId());
+            activityVO.setActivityId(activity.getActivityId());
+            activityVO.setActivityName(activity.getActivityName());
+            activityVO.setBeginDateTime(activity.getBeginDateTime());
+            activityVO.setEndDateTime(activity.getEndDateTime());
+            activityVO.setStatus(activity.getStatus());
+            activityVOList.add(activityVO);
+        }
+        return activityVOList;
+    }
 }

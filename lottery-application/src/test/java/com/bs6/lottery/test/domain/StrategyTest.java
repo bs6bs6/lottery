@@ -1,7 +1,9 @@
 package com.bs6.lottery.test.domain;
 
+import com.bs6.lottery.application.mq.KafkaProducer;
 import com.bs6.lottery.application.process.IActivityProcess;
 import com.bs6.lottery.application.process.model.DrawProcessReq;
+import com.bs6.lottery.domain.activity.model.InvoiceVO;
 import com.bs6.lottery.domain.activity.model.PartakeReq;
 import com.bs6.lottery.domain.activity.repository.IActivityRepository;
 import com.bs6.lottery.domain.activity.service.partake.IActivityPartake;
@@ -40,6 +42,8 @@ public class StrategyTest {
     IUserTakeActivityCountDao userTakeActivityCountDao;
     @Autowired
     ILotteryActivityBooth lotteryActivityBooth;
+    @Autowired
+    KafkaProducer kafkaProducer;
 
     @Test
     public void test_strategy() {
@@ -72,11 +76,31 @@ public class StrategyTest {
     }
 
     @Test
-    public void test_controller(){
-        DrawPrizeReq req = new DrawPrizeReq("Uhdgkw766120d",100001L);
+    public void test_controller() throws InterruptedException {
+        DrawPrizeReq req = new DrawPrizeReq("bs6",100002L);
         System.out.println(lotteryActivityBooth.doDraw(req));
-
+        while (true){
+            Thread.sleep(10000);
+        }
     }
+    @Test
+    public void test_send() throws InterruptedException {
+        InvoiceVO invoice = new InvoiceVO();
+        invoice.setUid("shiqi");
+        invoice.setOrderId(1444540456057864192L);
+        invoice.setPrizeId("3");
+        invoice.setPrizeType(1);
+        invoice.setPrizeName("Mac");
+        invoice.setPrizeContent("Code");
+        invoice.setShippingAddress(null);
+        invoice.setExtraInfo(null);
+        kafkaProducer.sendLotteryInvoice(invoice);
+
+        while (true){
+            Thread.sleep(10000);
+        }
+    }
+
 
 
 }

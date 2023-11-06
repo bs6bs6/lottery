@@ -38,6 +38,7 @@ public class UserStrategyExport {
     /** 更新时间 */
     private Date updateTime;
 
+    private Integer mqStatus;
     public Long getId() {
         return id;
     }
@@ -164,5 +165,13 @@ public class UserStrategyExport {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getMqStatus() {
+        return mqStatus;
+    }
+
+    public void setMqStatus(Integer mqStatus) {
+        this.mqStatus = mqStatus;
     }
 }

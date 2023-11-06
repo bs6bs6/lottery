@@ -4,6 +4,8 @@ package com.bs6.lottery.infrastructure.dao;
 import com.bs6.lottery.infrastructure.po.UserStrategyExport;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 
 @Mapper
 public interface IUserStrategyExportDao {
@@ -20,5 +22,13 @@ public interface IUserStrategyExportDao {
      * @return 用户策略
      */
     UserStrategyExport queryUserStrategyExportByUId(String uid);
+
+    void updateUserPrizeStatus(UserStrategyExport userStrategyExport);
+
+
+    void updateInvoiceMqStatus(UserStrategyExport userStrategyExport);
+
+    List<UserStrategyExport> scanInvoiceMqStatus();
+
 
 }

@@ -13,8 +13,7 @@ public class DistributeBase{
     @Resource
     private IPrizeRepository prizeRepository;
 
-    protected void updateUserAwardState(String uId, String orderId, String prizeId, Integer prizeStatus, String prizeStatusInfo) {
-        // TODO 后期添加更新分库分表中，用户个人的抽奖记录表中奖品发奖状态
-        logger.info("TODO 后期添加更新分库分表中，用户个人的抽奖记录表中奖品发奖状态 uId：{}", uId);
+    protected void updateUserPrizeStatus(String uid, Long orderId, String prizeId, Integer distributeStatus) {
+        prizeRepository.updateUserPrizeStatus(uid,orderId,prizeId,distributeStatus);
     }
 }

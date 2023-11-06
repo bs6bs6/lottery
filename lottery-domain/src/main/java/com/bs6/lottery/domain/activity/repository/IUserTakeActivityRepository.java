@@ -1,8 +1,10 @@
 package com.bs6.lottery.domain.activity.repository;
 
 import java.util.Date;
+import java.util.List;
 
 import com.bs6.lottery.domain.activity.model.DrawOrderVO;
+import com.bs6.lottery.domain.activity.model.InvoiceVO;
 import com.bs6.lottery.domain.activity.model.UserTakeActivityVO;
 
 public interface IUserTakeActivityRepository {
@@ -55,4 +57,8 @@ public interface IUserTakeActivityRepository {
 
     void saveUserStrategyExport(DrawOrderVO drawOrder);
 
+
+    void updateInvoiceMqStatus(String uId, Long orderId, Integer mqState);
+
+    List<InvoiceVO> scanInvoiceMqState();
 }

@@ -1,16 +1,10 @@
 package com.bs6.lottery.domain.prize.model;
 
-/**
- * @description: 商品配送结果
- * @author: 小傅哥，微信：fustack
- * @date: 2021/9/4
- * @github: https://github.com/fuzhengwei
- * @Copyright: 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
- */
+
 public class DistributeRes {
 
     /** 用户ID */
-    private String uId;
+    private String uid;
 
     /** 编码 */
     private Integer code;
@@ -26,29 +20,29 @@ public class DistributeRes {
     /**
      * 构造函数
      *
-     * @param uId   用户ID
+     * @param uid   用户ID
      * @param code  编码
      * @param info  描述
      */
-    public DistributeRes(String uId, Integer code, String info) {
-        this.uId = uId;
+    public DistributeRes(String uid, Integer code, String info) {
+        this.uid = uid;
         this.code = code;
         this.info = info;
     }
 
-    public DistributeRes(String uId, Integer code, String info, String statementId) {
-        this.uId = uId;
+    public DistributeRes(String uid, Integer code, String info, String statementId) {
+        this.uid = uid;
         this.code = code;
         this.info = info;
         this.statementId = statementId;
     }
 
-    public String getuId() {
-        return uId;
+    public String getUid() {
+        return uid;
     }
 
-    public void setuId(String uId) {
-        this.uId = uId;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public Integer getCode() {

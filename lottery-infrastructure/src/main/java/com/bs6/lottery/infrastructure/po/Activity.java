@@ -2,13 +2,7 @@ package com.bs6.lottery.infrastructure.po;
 
 import java.util.Date;
 
-/**
- * @description: 活动基础信息表
- * @author: 小傅哥，微信：fustack
- * @date: 2021/9/4
- * @github: https://github.com/fuzhengwei
- * @Copyright: 公众号：bugstack虫洞栈 | 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
- */
+
 public class Activity {
 
     /**
@@ -64,7 +58,7 @@ public class Activity {
     /**
      * 活动状态：1编辑、2提审、3撤审、4通过、5运行(审核通过后worker扫描状态)、6拒绝、7关闭、8开启
      */
-    private Integer state;
+    private Integer status;
 
     /**
      * 创建人
@@ -161,12 +155,12 @@ public class Activity {
         this.strategyId = strategyId;
     }
 
-    public Integer getState() {
-        return state;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setState(Integer state) {
-        this.state = state;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getCreator() {

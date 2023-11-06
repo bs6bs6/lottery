@@ -1,9 +1,8 @@
-package com.bs6.lottery.domain.prize.model;
+package com.bs6.lottery.domain.activity.model;
 
+import com.bs6.lottery.domain.prize.model.ShippingAddress;
 
-
-
-public class GoodsReq {
+public class InvoiceVO {
 
     /** 用户ID */
     private String uid;
@@ -15,13 +14,14 @@ public class GoodsReq {
     private String prizeId;
 
     /**
-     * 奖品名称
+     * 奖品类型（1:文字描述、2:兑换码、3:优惠券、4:实物奖品）
      */
+    private Integer prizeType;
+
+    /** 奖品名称 */
     private String prizeName;
 
-    /**
-     * 奖品内容「描述、奖品码、sku」
-     */
+    /** 奖品内容「描述、奖品码、sku」 */
     private String prizeContent;
 
     /** 四级送货地址（只有实物类商品需要地址） */
@@ -29,26 +29,6 @@ public class GoodsReq {
 
     /** 扩展信息，用于一些个性商品发放所需要的透传字段内容 */
     private String extraInfo;
-
-    public GoodsReq() {
-    }
-
-    public GoodsReq(String uid, Long orderId, String prizeId, String prizeName, String prizeContent) {
-        this.uid = uid;
-        this.orderId = orderId;
-        this.prizeId = prizeId;
-        this.prizeName = prizeName;
-        this.prizeContent = prizeContent;
-    }
-
-    public GoodsReq(String uid, Long orderId, String prizeId, String prizeName, String prizeContent, ShippingAddress shippingAddress) {
-        this.uid = uid;
-        this.orderId = orderId;
-        this.prizeId = prizeId;
-        this.prizeName = prizeName;
-        this.prizeContent = prizeContent;
-        this.shippingAddress = shippingAddress;
-    }
 
     public String getUid() {
         return uid;
@@ -72,6 +52,14 @@ public class GoodsReq {
 
     public void setPrizeId(String prizeId) {
         this.prizeId = prizeId;
+    }
+
+    public Integer getPrizeType() {
+        return prizeType;
+    }
+
+    public void setPrizeType(Integer prizeType) {
+        this.prizeType = prizeType;
     }
 
     public String getPrizeName() {
@@ -104,5 +92,19 @@ public class GoodsReq {
 
     public void setExtraInfo(String extraInfo) {
         this.extraInfo = extraInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "InvoiceVO{" +
+                "uid='" + uid + '\'' +
+                ", orderId=" + orderId +
+                ", prizeId='" + prizeId + '\'' +
+                ", prizeType=" + prizeType +
+                ", prizeName='" + prizeName + '\'' +
+                ", prizeContent='" + prizeContent + '\'' +
+                ", shippingAddress=" + shippingAddress +
+                ", extraInfo='" + extraInfo + '\'' +
+                '}';
     }
 }

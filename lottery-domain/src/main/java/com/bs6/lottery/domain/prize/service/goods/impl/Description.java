@@ -14,7 +14,7 @@ public class Description extends DistributeBase implements IDistributeGoods {
         logger.info("模拟调用奖品描述发放接口 uid：{} prizedContent：{}", req.getUid(), req.getPrizeContent());
 
         // 更新用户领奖结果
-        super.updateUserAwardState(req.getUid(), req.getOrderId(), req.getPrizeId(), Constants.PrizeStatus.SUCCESS.getCode(), Constants.PrizeStatus.SUCCESS.getInfo());
+        super.updateUserPrizeStatus(req.getUid(), req.getOrderId(), req.getPrizeId(), Constants.DistributeStatus.COMPLETE.getCode() );
 
         return new DistributeRes(req.getUid(), Constants.PrizeStatus.SUCCESS.getCode(), Constants.PrizeStatus.SUCCESS.getInfo());
     }

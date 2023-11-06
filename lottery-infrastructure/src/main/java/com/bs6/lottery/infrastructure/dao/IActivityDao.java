@@ -4,6 +4,8 @@ import com.bs6.lottery.domain.activity.model.AlterStatusVO;
 import com.bs6.lottery.infrastructure.po.Activity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface IActivityDao {
 
@@ -25,7 +27,7 @@ public interface IActivityDao {
     /**
      * 变更活动状态
      *
-     * @param alterStatusVO  [activityId、beforeState、afterState]
+     * @param alterStatusVO  [activityId、beforestatus、afterstatus]
      * @return 更新数量
      */
     int alterStatus(AlterStatusVO alterStatusVO);
@@ -36,5 +38,7 @@ public interface IActivityDao {
      * @return 更新数量
      */
     int subtractionActivityStock(Long activityId);
+
+    List<Activity> scanToDoActivityList(Long id);
 
 }

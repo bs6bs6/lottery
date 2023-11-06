@@ -2,6 +2,7 @@ package com.bs6.lottery.infrastructure.repository;
 
 import com.bs6.lottery.common.Constants;
 import com.bs6.lottery.domain.activity.model.DrawOrderVO;
+import com.bs6.lottery.domain.activity.model.InvoiceVO;
 import com.bs6.lottery.domain.activity.model.UserTakeActivityVO;
 import com.bs6.lottery.domain.activity.repository.IUserTakeActivityRepository;
 import com.bs6.lottery.infrastructure.dao.IUserStrategyExportDao;
@@ -13,7 +14,9 @@ import com.bs6.lottery.infrastructure.po.UserTakeActivityCount;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UserTakeActivityRepository implements IUserTakeActivityRepository {
@@ -113,5 +116,33 @@ public class UserTakeActivityRepository implements IUserTakeActivityRepository {
         userStrategyExport.setUuid(String.valueOf(drawOrder.getOrderId()));
 
         userStrategyExportDao.insert(userStrategyExport);
+    }
+
+    @Override
+    public void updateInvoiceMqStatus(String uId, Long orderId, Integer mqStatus) {
+        UserStrategyExport userStrategyExport = new UserStrategyExport();
+        userStrategyExport.setUid(uId);
+        userStrategyExport.setOrderId(orderId);
+        userStrategyExport.setMqStatus(mqStatus);
+        userStrategyExportDao.updateInvoiceMqStatus(userStrategyExport);
+    }
+
+    @Override
+    public List<InvoiceVO> scanInvoiceMqState() {
+        // 查询发送MQ失败和超时30分钟，未发送MQ的数据
+        List<UserStrategyExport> userStrategyExportList = userStrategyExportDao.scanInvoiceMqStatus();
+        // 转换对象
+        List<InvoiceVO> invoiceVOList = new ArrayList<>(userStrategyExportList.size());
+        for (UserStrategyExport userStrategyExport : userStrategyExportList) {
+            InvoiceVO invoiceVO = new InvoiceVO();
+            invoiceVO.setUid(userStrategyExport.getUid());
+            invoiceVO.setOrderId(userStrategyExport.getOrderId());
+            invoiceVO.setPrizeId(userStrategyExport.getPrizeId());
+            invoiceVO.setPrizeType(userStrategyExport.getPrizeType());
+            invoiceVO.setPrizeName(userStrategyExport.getPrizeName());
+            invoiceVO.setPrizeContent(userStrategyExport.getPrizeContent());
+            invoiceVOList.add(invoiceVO);
+        }
+        return invoiceVOList;
     }
 }

@@ -2,10 +2,7 @@ package com.bs6.lottery.domain.activity.service.partake.impl;
 
 import com.bs6.lottery.common.Constants;
 import com.bs6.lottery.common.Result;
-import com.bs6.lottery.domain.activity.model.DrawOrderVO;
-import com.bs6.lottery.domain.activity.model.PartakeReq;
-import com.bs6.lottery.domain.activity.model.ActivityBillVO;
-import com.bs6.lottery.domain.activity.model.UserTakeActivityVO;
+import com.bs6.lottery.domain.activity.model.*;
 import com.bs6.lottery.domain.activity.repository.IActivityRepository;
 import com.bs6.lottery.domain.activity.repository.IUserTakeActivityRepository;
 import com.bs6.lottery.domain.activity.service.partake.BaseActivityPartake;
@@ -18,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -105,7 +103,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
     public Result recordDrawOrder(DrawOrderVO drawOrder) {
             return transactionTemplate.execute(status -> {
                 try {
-                    // lock activity, confirm that it is taken by user，status 0 -> 1
+                    // lock activity, confirm that it is actually taken by user，status 0 -> 1
                     int lockCount = userTakeActivityRepository.lockTackActivity(drawOrder.getUid(), drawOrder.getActivityId(), drawOrder.getTakeId());
                     if (0 == lockCount) {
                         status.setRollbackOnly();
@@ -122,7 +120,15 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
                 }
                 return Result.buildSuccessResult();
             });
-        }
+    }
 
+    @Override
+    public void updateInvoiceMqState(String uId, Long orderId, Integer mqState) {
+        userTakeActivityRepository.updateInvoiceMqStatus(uId, orderId, mqState);
+    }
 
+    @Override
+    public List<InvoiceVO> scanInvoiceMqState() {
+        return userTakeActivityRepository.scanInvoiceMqState();
+    }
 }
