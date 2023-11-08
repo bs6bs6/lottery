@@ -62,4 +62,24 @@ public interface IActivityRepository {
 
     List<ActivityVO> scanToDoActivityList(Long id);
 
+    /**
+     * 扣减活动库存，通过Redis
+     *
+     * @param uid        用户ID
+     * @param activityId 活动ID
+     * @param stockCount 总库存
+     * @return 扣减结果
+     */
+    StockResult subtractionActivityStockByRedis(String uid, Long activityId, Integer stockCount);
+
+    /**
+     * 恢复活动库存，通过Redis 【如果非常异常，则需要进行缓存库存恢复，只保证不超卖的特性，所以不保证一定能恢复占用库存，另外最终可以由任务进行补偿库存】
+     *
+     * @param activityId    活动ID
+     * @param tokenKey      分布式 KEY 用于清理
+     * @param code          状态
+     */
+    void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code);
+
+    void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO);
 }

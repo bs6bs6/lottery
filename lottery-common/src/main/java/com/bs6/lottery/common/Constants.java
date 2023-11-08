@@ -7,7 +7,13 @@ public class Constants {
         UN_ERROR("0001", "Error"),
         ILLEGAL_PARAMETER("0002", "Illegal Parameters"),
         INDEX_DUP("0003", "Primary Key Duplicates"),
-        NO_UPDATE("0004","SQL No Updates");
+        NO_UPDATE("0004","SQL No Updates"),
+
+        LOSING_DRAW("D001", "lose"),
+
+        NOT_CONSUMED_TAKE("D003", "unconsumed record"),
+        OUT_OF_STOCK("D004", "out of stock"),
+        ERR_TOKEN("D005", "distributed lock duplicate");
 
         private String code;
         private String info;
@@ -23,6 +29,24 @@ public class Constants {
 
         public String getInfo() {
             return info;
+        }
+
+    }
+
+    public static final class RedisKey {
+
+        // 抽奖活动库存 Key
+        private static final String LOTTERY_ACTIVITY_STOCK_COUNT = "lottery_activity_stock_count_";
+
+        public static String KEY_LOTTERY_ACTIVITY_STOCK_COUNT(Long activityId) {
+            return LOTTERY_ACTIVITY_STOCK_COUNT + activityId;
+        }
+
+        // 抽奖活动库存锁 Key
+        private static final String LOTTERY_ACTIVITY_STOCK_COUNT_TOKEN = "lottery_activity_stock_count_token_";
+
+        public static String KEY_LOTTERY_ACTIVITY_STOCK_COUNT_TOKEN(Long activityId, Integer stockUsedCount) {
+            return LOTTERY_ACTIVITY_STOCK_COUNT_TOKEN + activityId + "_" + stockUsedCount;
         }
 
     }

@@ -5,10 +5,7 @@ import com.bs6.lottery.application.process.IActivityProcess;
 import com.bs6.lottery.application.process.model.DrawProcessReq;
 import com.bs6.lottery.application.process.model.DrawProcessResult;
 import com.bs6.lottery.common.Constants;
-import com.bs6.lottery.domain.activity.model.DrawOrderVO;
-import com.bs6.lottery.domain.activity.model.InvoiceVO;
-import com.bs6.lottery.domain.activity.model.PartakeReq;
-import com.bs6.lottery.domain.activity.model.PartakeResult;
+import com.bs6.lottery.domain.activity.model.*;
 import com.bs6.lottery.domain.activity.service.partake.IActivityPartake;
 import com.bs6.lottery.domain.strategy.model.DrawPrizeInfo;
 import com.bs6.lottery.domain.strategy.model.DrawReq;
@@ -49,6 +46,18 @@ public class ActivityProcessImpl implements IActivityProcess {
         if(!partakeResult.getCode().equals(Constants.ResponseCode.SUCCESS.getCode())){
             return new DrawProcessResult(partakeResult.getCode(),partakeResult.getInfo());
         }
+
+        // 2. 首次成功领取活动，发送 MQ 消息
+        if (Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode())) {
+            ActivityPartakeRecordVO activityPartakeRecord = new ActivityPartakeRecordVO();
+            activityPartakeRecord.setUid(req.getUid());
+            activityPartakeRecord.setActivityId(req.getActivityId());
+            activityPartakeRecord.setStockCount(partakeResult.getStockCount());
+            activityPartakeRecord.setStockSurplusCount(partakeResult.getStockSurplusCount());
+            // 发送 MQ 消息
+            kafkaProducer.sendLotteryActivityPartakeRecord(activityPartakeRecord);
+        }
+
 
         Long strategyId = partakeResult.getStrategyId();
         Long takeId = partakeResult.getTakeId();

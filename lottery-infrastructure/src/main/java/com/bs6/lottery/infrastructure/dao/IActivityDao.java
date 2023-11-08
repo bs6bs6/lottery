@@ -41,4 +41,5 @@ public interface IActivityDao {
 
     List<Activity> scanToDoActivityList(Long id);
 
+    void updateActivityStock(Activity activity);
 }

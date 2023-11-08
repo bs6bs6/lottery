@@ -73,6 +73,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
 
     @Override
     public Result grabActivity(PartakeReq partake, ActivityBillVO bill,Long takeId) {
+        //explicitly execute transaction
         return transactionTemplate.execute(status -> {
             try {
                 // 扣减个人已参与次数
@@ -130,5 +131,21 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
     @Override
     public List<InvoiceVO> scanInvoiceMqState() {
         return userTakeActivityRepository.scanInvoiceMqState();
+    }
+
+    @Override
+    protected StockResult subtractionActivityStockByRedis(String uid, Long activityId, Integer stockCount) {
+        return activityRepository.subtractionActivityStockByRedis(uid, activityId, stockCount);
+
+    }
+
+    @Override
+    protected void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code) {
+         activityRepository.recoverActivityCacheStockByRedis(activityId, tokenKey, code);
+    }
+
+    @Override
+    public void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO) {
+         activityRepository.updateActivityStock(activityPartakeRecordVO);
     }
 }

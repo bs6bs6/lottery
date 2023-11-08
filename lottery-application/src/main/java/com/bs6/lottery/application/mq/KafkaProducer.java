@@ -1,6 +1,7 @@
 package com.bs6.lottery.application.mq;
 
 import com.alibaba.fastjson.JSON;
+import com.bs6.lottery.domain.activity.model.ActivityPartakeRecordVO;
 import com.bs6.lottery.domain.activity.model.InvoiceVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ public class KafkaProducer {
      */
     public static final String TOPIC_INVOICE = "lottery_invoice";
 
+    public static final String TOPIC_ACTIVITY_PARTAKE = "lottery_activity_partake";
+
     /**
      * 发送中奖物品发货单消息
      *
@@ -33,6 +36,14 @@ public class KafkaProducer {
         logger.info("发送MQ消息 topic：{} bizId：{} message：{}", TOPIC_INVOICE, invoice.getUid(), objJson);
         return kafkaTemplate.send(TOPIC_INVOICE, objJson);
     }
+
+    public ListenableFuture<SendResult<String, Object>> sendLotteryActivityPartakeRecord(ActivityPartakeRecordVO activityPartakeRecord) {
+        String objJson = JSON.toJSONString(activityPartakeRecord);
+        logger.info("发送MQ消息(领取活动记录) topic：{} bizId：{} message：{}", TOPIC_ACTIVITY_PARTAKE, activityPartakeRecord.getUid(), objJson);
+        return kafkaTemplate.send(TOPIC_ACTIVITY_PARTAKE, objJson);
+    }
+
+
 
 
 }

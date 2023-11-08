@@ -1,10 +1,7 @@
 package com.bs6.lottery.domain.activity.service.partake;
 
 import com.bs6.lottery.common.Result;
-import com.bs6.lottery.domain.activity.model.DrawOrderVO;
-import com.bs6.lottery.domain.activity.model.InvoiceVO;
-import com.bs6.lottery.domain.activity.model.PartakeReq;
-import com.bs6.lottery.domain.activity.model.PartakeResult;
+import com.bs6.lottery.domain.activity.model.*;
 
 import java.util.List;
 
@@ -22,4 +19,7 @@ public interface IActivityPartake {
     void updateInvoiceMqState(String uId, Long orderId, Integer mqState);
 
     List<InvoiceVO> scanInvoiceMqState();
+
+    void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO);
+
 }

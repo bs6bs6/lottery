@@ -14,6 +14,7 @@ public abstract class BaseActivityPartake implements IActivityPartake {
     @Resource
     protected IActivityRepository activityRepository;
 
+
     @Resource
     private Map<Constants.Ids, IIdGenerator> idGeneratorMap;
     @Override
@@ -22,7 +23,7 @@ public abstract class BaseActivityPartake implements IActivityPartake {
         // That's because the request succeed in taking activity but failed when write down the order into DB
         UserTakeActivityVO userTakeActivityVO = this.queryNoConsumedTakeActivityOrder(req.getActivityId(), req.getUid());
         if (null != userTakeActivityVO) {
-            return buildPartakeResult(userTakeActivityVO.getStrategyId(), userTakeActivityVO.getTakeId());
+            return buildPartakeResult(userTakeActivityVO.getStrategyId(), userTakeActivityVO.getTakeId(),Constants.ResponseCode.NOT_CONSUMED_TAKE);
         }
 
         // 2.查询活动账单
@@ -37,27 +38,43 @@ public abstract class BaseActivityPartake implements IActivityPartake {
             return new PartakeResult(checkResult.getCode(), checkResult.getInfo());
         }
 
-        // 4.扣减活动库存【目前为直接对配置库中的 lottery.activity 直接操作表扣减库存，后续优化为Redis扣减】
-        Result subtractionActivityResult = this.subtractionActivityStock(req);
+        StockResult subtractionActivityResult = this.subtractionActivityStockByRedis(req.getUid(), req.getActivityId(), activityBillVO.getStockCount());
+
+        // 4.扣减活动库存
+//        Result subtractionActivityResult = this.subtractionActivityStock(req);
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(subtractionActivityResult.getCode())) {
+            this.recoverActivityCacheStockByRedis(req.getActivityId(), subtractionActivityResult.getStockKey(), subtractionActivityResult.getCode());
             return new PartakeResult(subtractionActivityResult.getCode(), subtractionActivityResult.getInfo());
         }
+
 
         // 5. 插入领取活动信息【个人用户把活动信息写入到用户表】
         Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
         Result grabResult = this.grabActivity(req, activityBillVO, takeId);
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(grabResult.getCode())) {
+            this.recoverActivityCacheStockByRedis(req.getActivityId(), subtractionActivityResult.getStockKey(), grabResult.getCode());
             return new PartakeResult(grabResult.getCode(), grabResult.getInfo());
         }
 
+        // 6. 扣减活动库存，通过Redis End
+        this.recoverActivityCacheStockByRedis(req.getActivityId(), subtractionActivityResult.getStockKey(), Constants.ResponseCode.SUCCESS.getCode());
 
-        return buildPartakeResult(activityBillVO.getStrategyId(), takeId);
+
+        return buildPartakeResult(activityBillVO.getStrategyId(), takeId, activityBillVO.getStockCount(), activityBillVO.getStockSurplusCount(), Constants.ResponseCode.SUCCESS);
     }
 
-    private PartakeResult buildPartakeResult(Long strategyId, Long takeId) {
-        PartakeResult partakeResult = new PartakeResult(Constants.ResponseCode.SUCCESS.getCode(), Constants.ResponseCode.SUCCESS.getInfo());
+    private PartakeResult buildPartakeResult(Long strategyId, Long takeId, Constants.ResponseCode code) {
+        PartakeResult partakeResult = new PartakeResult(code.getCode(), code.getInfo());
         partakeResult.setStrategyId(strategyId);
         partakeResult.setTakeId(takeId);
+        return partakeResult;
+    }
+    private PartakeResult buildPartakeResult(Long strategyId, Long takeId, Integer stockCount, Integer stockSurplusCount, Constants.ResponseCode code) {
+        PartakeResult partakeResult = new PartakeResult(code.getCode(), code.getInfo());
+        partakeResult.setStrategyId(strategyId);
+        partakeResult.setTakeId(takeId);
+        partakeResult.setStockCount(stockCount);
+        partakeResult.setStockSurplusCount(stockSurplusCount);
         return partakeResult;
     }
 
@@ -85,6 +102,10 @@ public abstract class BaseActivityPartake implements IActivityPartake {
      * @return 扣减结果
      */
     protected abstract Result subtractionActivityStock(PartakeReq req);
+
+    protected abstract StockResult subtractionActivityStockByRedis(String uid, Long activityId, Integer stockCount);
+
+    protected abstract void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code);
 
     /**
      * 领取活动
